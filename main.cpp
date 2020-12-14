@@ -1,330 +1,320 @@
 /*
-CSCI 240         Program 9     Fall 2020
+CSCI 240         Program 10     Fall 2020
 
 Programmer: Jacob Eul
- Programming Partner: Caitlyn Hensley
+ 
 
 Section: 0001
 
-Date Due: Nov 24 2020
+Date Due: December 04 2020
 
-Purpose: calculate fractions
+Purpose: plays first to 21 (card game)
 */
 
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
-#include <fstream>
+#include <cstring>
 
 using namespace std;
 
-class Rational {
+// initializes the card class
+class Card{
 public:
-  int numerator;
-  int denominator;
-
-  Rational();
-  Rational(int, int);
-
-  void displayFloat();
-  void displayFraction();
-  void display();
-
-  void setNumerator(int);
-  void setDenominator(int);
-  void setRational(int, int);
-
-  Rational add(int, int);
-  Rational subtract(int, int);
-  Rational multiply(int, int);
-  Rational divide(int, int);
+    Card();
+    void setCard( int , const char * );
+    int getFace();
+    const char * getSuit();
+    void displayCard();
 
 private:
-  void reduce();
-  int GCD(int, int);
-  int LCM(int, int);
+    int face = 1;
+    char suit[9] = {};
 };
 
-int main() {
-  cout << "***** Testing the constructors *****" << endl << endl;
-  cout << endl;
 
-  cout << "the default constructor produces ";
-  Rational r1;
-  r1.displayFraction();
-  cout << endl;
-  cout << endl;
 
-  cout << "The alternate constructor with 11, 30 produces ";
-  Rational r2(11, 30);
-  r2.display();
-  cout << endl;
-
-  cout << "                          with  2, 30 produces ";
-  Rational r3(2, 30);
-  r3.display();
-  cout << endl;
-
-  cout << "                          with  5, 6  produces ";
-  Rational r4(5, 6);
-  r4.display();
-  cout << endl;
-
-  cout << "                          with  3, 7  produces ";
-  Rational r5(3, 7);
-  r5.display();
-  cout << endl;
-  cout << endl;
-  cout << endl;
-
-  cout << "*****Testing the set methods *****" << endl;
-  cout << endl;
-
-  cout << "setNumerator(8) changes ";
-  r3.displayFraction();
-  cout << " to ";
-  r3.setNumerator(8);
-  r3.displayFraction();
-  cout << endl;
-  cout << endl;
-
-  cout << "setDenominator(73) changes ";
-  r4.displayFraction();
-  cout << " to ";
-  r4.setDenominator(73);
-  r4.displayFraction();
-  cout << endl;
-  cout << endl;
-
-  cout << "setRational(4, 6) changes ";
-  r1.displayFraction();
-  cout << " to ";
-  r1.setRational(4, 6);
-  r1.displayFraction();
-  cout << endl;
-  cout << endl;
-  cout << endl;
-
-  cout << "***** Testing the add method *****" << endl;
-  cout << endl;
-
-  r4.displayFraction();
-  cout << " + 3/7 = ";
-  Rational r6 = r4.add(3, 7);
-  r6.display();
-  cout << endl;
-  cout << endl;
-
-  r6.displayFraction();
-  cout << " + 3/7 = ";
-  r6 = r6.add(3, 7);
-  r6.display();
-  cout << endl;
-  cout << endl;
-
-  r3.displayFraction();
-  cout << " + 1/2 = ";
-  Rational r7 = r3.add(1, 2);
-  r7.display();
-  cout << endl;
-  cout << endl;
-
-  r1.displayFraction();
-  cout << " + 15/16 = ";
-  Rational r8 = r1.add(15, 16);
-  r8.display();
-  cout << endl;
-  cout << endl;
-  cout << endl;
-
-  cout << "***** Testing the subtract method *****" << endl;
-  cout << endl;
-
-  r6.displayFraction();
-  cout << " - 5/7 = ";
-  Rational r9 = r6.subtract(5, 7);
-  r9.display();
-  cout << endl;
-  cout << endl;
-
-  r7.displayFraction();
-  cout << " - 3/6 = ";
-  Rational r10 = r7.subtract(3, 6);
-  r10.display();
-  cout << endl;
-  cout << endl;
-
-  r8.displayFraction();
-  cout << " - 101/117 = ";
-  Rational r11 = r8.subtract(101, 117);
-  r11.display();
-  cout << endl;
-  cout << endl;
-  cout << endl;
-
-  cout << "***** Testing the multiply method *****" << endl;
-  cout << endl;
-
-  r9.displayFraction();
-  cout << " * 1/1 = ";
-  Rational r12 = r9.multiply(1, 1);
-  r12.display();
-  cout << endl;
-  cout << endl;
-
-  r10.displayFraction();
-  cout << " * 7/30 = ";
-  Rational r13 = r10.multiply(7, 30);
-  r13.display();
-  cout << endl;
-  cout << endl;
-
-  r11.displayFraction();
-  cout << " * 2/4 = ";
-  Rational r14 = r11.multiply(2, 4);
-  r14.display();
-  cout << endl;
-  cout << endl;
-  cout << endl;
-
-  cout << "***** Testing the divide method *****" << endl;
-  cout << endl;
-
-  r9.displayFraction();
-  cout << " / 5/8 = ";
-  Rational r15 = r9.divide(5, 8);
-  r15.display();
-  cout << endl;
-  cout << endl;
-
-  r13.displayFraction();
-  cout << " / 5/15 = ";
-  Rational r16 = r13.divide(5, 15);
-  r16.display();
-  cout << endl;
-  cout << endl;
-
-  r5.displayFraction();
-  cout << " / 2/4 = ";
-  Rational r17 = r5.divide(2, 4);
-  r17.display();
-  cout << "\n\n\n";
-}
-
-Rational::Rational() {
-  numerator = 1;
-  denominator = 1;
-}
-
-Rational::Rational(int _numer, int _denom) {
-  setRational(_numer, _denom);
-  reduce();
-}
-
-void Rational::displayFloat() {
-  cout << fixed << setprecision(5) << (float)numerator / (float)denominator;
-}
-
-void Rational::displayFraction() {
-  cout << numerator << "/" << denominator;
-}
-
-void Rational::display() {
-  displayFraction();
-  cout << "     or     ";
-  displayFloat();
-}
-
-void Rational::setNumerator(int _numer) {
-  numerator = _numer;
-  reduce();
-}
-
-void Rational::setDenominator(int _denom) {
-  denominator = _denom;
-  reduce();
-}
-
-void Rational::setRational(int _numer, int _denom) {
-  numerator = _numer;
-  denominator = _denom;
-  reduce();
-}
-
-Rational Rational::add(int _numer, int _denom) {
-  int lcm = LCM(denominator, _denom);
-  int newNumeratorLeft = numerator * (lcm / denominator);
-  int newNumeratorRight = _numer * (lcm / _denom);
-  Rational sum(newNumeratorLeft + newNumeratorRight, lcm);
-  return sum;
-}
-
-Rational Rational::subtract(int _numer, int _denom) {
-  int lcm = LCM(denominator, _denom);
-  int newNumeratorLeft = numerator * (lcm / denominator);
-  int newNumeratorRight = _numer * (lcm / _denom);
-  Rational diff(newNumeratorLeft - newNumeratorRight, lcm);
-  return diff;
-}
-
-Rational Rational::multiply(int _numer, int _denom) {
-  Rational product(numerator * _numer, denominator * _denom);
-  return product;
-}
-
-Rational Rational::divide(int _numer, int _denom) {
-  Rational quotient(numerator * _denom, denominator * _numer);
-  return quotient;
-}
-
-void Rational::reduce() {
-  int gcd = GCD(numerator, denominator);
-  numerator /= gcd;
-  denominator /= gcd;
-}
-
-int Rational::GCD(int val1, int val2)
+//Definition for a class that represents a deck of cards
+class DeckOfCards
 {
-  int remainder, num1, num2;
-  //set variables num1 and num2 to the two passed in values
-  num1 = val1;
-  num2 = val2;
-  //continue dividing num1 by num2 until a remainder of 0 is found
-  while (true)
-  {
-    //find the remainder when num1 is divided by num2
-    remainder = num1 % num2;
-    //if the remainder is 0, get out of the loop
-    if (remainder == 0)
-      break;
-    //set num1 to the current num2 value
-    num1 = num2;
-    //set num2 to the remainder
-    num2 = remainder;
-  }//end while
-//After the loop is done executing, the variable num2 will contain the
-//greatest common divisor.
-  return num2;
+public:
+  DeckOfCards();
+
+  Card draw();
+  void shuffle();
+  bool isEmpty();
+
+private:
+  static const int MAX_CARDS = 52;       //Maximum number of cards in a deck
+  static const int NUM_SUITS = 4;        //Number of card suits
+  static const int CARDS_PER_SUIT = 13;  //Number of cards of each suit
+
+  Card deck[MAX_CARDS];     //The deck of cards
+  int topCard;              //The subscript of the card on the top of the deck
+};
+
+
+
+/**********   Code the Card class methods between these lines   **********/
+// creates a card object from the class cards and assigns it a face value and a character array value
+// arguments: none          returns: nothing
+Card::Card(){
+    face = ( rand() % 13 ) + 1;
+    switch( (rand()%4)+1 ){
+    case 1:
+        strcpy( suit , "Clubs" );
+        break;
+    case 2:
+        strcpy( suit , "Diamonds" );
+        break;
+    case 3:
+        strcpy( suit , "Hearts" );
+        break;
+    case 4:
+        strcpy( suit , "Spades" );
+        break;
+    default:
+        break;
+    }
+    
 }
 
-int Rational::LCM(int val1, int val2)
-{
-  int num1, num2, lcm;
-  //set variables num1 and num2 to the two passed in values
-  num1 = val1;
-  num2 = val2;
-  //set lcm to the first passed in value
-  lcm = num1;
-  //while lcm is less than or equal to the product of num1 and num2
-  while (lcm <= num1 * num2)
-  {
-    //if the remainder of lcm divided by num1 is 0 and
-    //   the remainder of lcm divided by num2 is 0, get out of the loop
-    if (lcm % num1 == 0 and lcm % num2 == 0)
-      break;
-    //increment lcm by 1
-    lcm++;
-  }//end while
-//return the least common multiple
-  return lcm;
+// defines a method from the card class this function determines the suit of a given card
+// arguments: int _face , const char * _suit  returns: Nothing
+void Card::setCard( int _face , const char * _suit ){
+    face = _face;
+    if( _face < 1 || _face > 13 ){
+        face = 1;
+    }
+    if( strcmp( _suit , "Clubs" )!=0 &&
+        strcmp( _suit , "Diamonds") != 0 &&
+        strcmp( _suit , "Hearts" ) != 0 &&
+        strcmp( _suit , "Spades" ) != 0 ){
+        strcpy( suit , "Hearts" );
+    }else{
+        strcpy( suit , _suit );
+    }
+
+    
 }
+
+// this method simply gets the face value from an object and returns it
+// arguments: none          returns: nothing
+int Card::getFace(){
+    return face;
+}
+
+// this method simply gets the suit from an object and returns it
+// arguments: none          returns: nothing
+const char * Card::getSuit(){
+    return suit;
+}
+
+// defines a method from the card class that will print the necessary info from a given object
+// arguments: none          returns: nothing
+void Card::displayCard(){
+    switch( face ){
+    case 1:
+        cout << "Ace";
+        break;
+    case 11:
+        cout << "Jack";
+        break;
+    case 12:
+        cout << "Queen";
+        break;
+    case 13:
+        cout << "King";
+        break;
+    default:
+        cout << face;
+        break;
+    }
+    cout << " of " << suit;
+}
+
+/*************************************************************************/
+
+
+/***************************************************************
+Constructor
+
+Use: This creates a DeckOfCards object and then shuffles the
+     cards
+
+Arguments: none
+
+Note: -1 is used to signal that no cards have been removed from
+      the deck
+***************************************************************/
+DeckOfCards::DeckOfCards()
+{
+//An array of the 4 possible values for the card suits
+const char suitVals[NUM_SUITS][9] = { "Clubs", "Diamonds", "Hearts", "Spades" };
+
+int cardSub = 0;    //subscript to process the deck of cards
+
+//Go through all 52 spots in the array of Cards and put a card
+//at the location
+
+for( int suitSub = 0; suitSub < NUM_SUITS; suitSub++ )
+  {
+  //For each of the suits, put in all of the cards for the suit
+  for( int faceVal = 1; faceVal <= CARDS_PER_SUIT; faceVal++ )
+    {
+    //Put the card into the deck
+    deck[ cardSub ].setCard( faceVal, suitVals[suitSub] );
+
+    //Move to the next card in the deck
+    cardSub++;
+    }
+  }
+
+//shuffle the playing cards
+shuffle();
+
+//Set the top card location to -1 to indicate the deck is brand new
+topCard = -1;
+}
+
+
+
+/***************************************************************
+Method:  Card draw()
+
+Use: This method draws a card from the top of the deck
+
+Arguments: none
+
+Returns: a Card object (the card on the top of the deck)
+***************************************************************/
+
+Card DeckOfCards::draw()
+{
+//Increment to get the subscript of the current top card
+topCard++;
+
+//return the card that is currently on the top of the deck
+return deck[topCard];
+}
+
+
+
+/***************************************************************
+Method:  void shuffle()
+
+Use: This method shuffles the deck of cards
+
+Arguments: none
+
+Returns: nothing
+
+Note: this method uses the random_shuffle function that is part
+      of the algorithm library to shuffle the 52 cards
+***************************************************************/
+
+void DeckOfCards::shuffle()
+{
+//Shuffle all 52 cards that are in the deck
+
+random_shuffle(deck, deck+MAX_CARDS);
+}
+
+
+/***************************************************************
+Method:  bool isEmpty()
+
+Use: This method determines if the deck of cards is empty( have
+     all of the cards been drawn)
+
+Arguments: none
+
+Returns: boolean value: true if all of the cards have been drawn
+                        false if there are still cards in the deck
+***************************************************************/
+
+bool DeckOfCards::isEmpty()
+{
+//if topCard subscript plus 1 is greater than 52, the deck is
+//empty. Otherwise, there are cards that can be drawn.
+
+return topCard + 1 >= MAX_CARDS;
+}
+
+
+int main()
+{
+    
+    
+    //Set the seed value for the random number generator
+    srand( 0 );
+
+    DeckOfCards deck;
+    Card card;
+    int currentPlayer = 1 , currentCardTotal = 0 , points = 0 , player1Score = 0 , player2Score = 0;
+    
+    // alternate players
+    bool whichPlayer = true;
+    while( !deck.isEmpty() ){
+        if ( whichPlayer == true)
+        {
+            cout << "Player 1:" << endl;
+            whichPlayer = false;
+        }
+        else
+        {
+            cout << "Player 2:" << endl;
+            whichPlayer = true;
+        }
+        
+        // draws the necessary cards
+        currentCardTotal = 0;
+        for( int i = 0; i < 3 && currentCardTotal < 21 && !deck.isEmpty(); i++ ){
+            card = deck.draw();
+            card.displayCard();
+            switch( card.getFace() ){
+            case 1:
+                currentCardTotal+=1;
+            case 11:
+            case 12:
+            case 13:
+                currentCardTotal += 10;
+                break;
+            default:
+                currentCardTotal += card.getFace();
+                break;
+            }
+            cout << "   Total: " << currentCardTotal << endl;
+        }
+        cout << endl;
+        
+        // decides how many points to award
+        if( currentCardTotal <= 21 ){
+            points = 10;
+            if( currentCardTotal == 21 ) points += 5;
+            cout << "Congratulations player " << currentPlayer << "! " << points << " points awarded!";
+        } else{
+            cout << "Sorry player " << currentPlayer << " -- Busted!";
+            points = 0;
+        }
+        cout << endl << "-------------------" << endl << endl;
+        if( currentPlayer == 1 ){
+            player1Score += points;
+            currentPlayer++;
+        } else{
+            player2Score += points;
+            currentPlayer--;
+        }
+    }
+    
+    // print the scores
+    cout << "Player 1 score: " << player1Score << endl
+        << "Player 2 score: " << player2Score
+        << endl << endl
+        << "Player " << ( player1Score > player2Score ? 1 : 2 ) << " won!";
+
+    cout << "\n\n\n";
+
+    return 0;
+}
+
